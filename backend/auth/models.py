@@ -9,7 +9,12 @@ class User(AbstractUser):
         FEMALE = "F", "Female"
         OTHER = "O", "Other"
     
+    class MedicalHistory(models.TextField):
+        last_edited = models.DateField(auto_now = True, verbose_name = "last_edited")
+    
     dob = models.DateField(verbose_name='date of birth', help_text='date of birth')
     phone = PhoneNumberField(region='SY')
     gender = models.CharField(choices=GenderChoices.choices)
     medical_history = models.TextField()
+    username = None
+    
