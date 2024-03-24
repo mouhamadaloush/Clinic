@@ -15,7 +15,7 @@ from .utils import get_and_authenticate_user, create_user_account
 User = get_user_model()
 
 
-class AuthViewset(viewsets.GenericViewSet):
+class AuthViewSet(viewsets.GenericViewSet):
     permission_classes = [
         AllowAny,
     ]
