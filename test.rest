@@ -1,0 +1,39 @@
+POST http://127.0.0.1:8000/auth/login
+Content-Type: application/json
+
+{"email": "mouhamad5@gmail.com", "password": "clinic1231234"}
+
+###
+
+POST http://127.0.0.1:8000/auth/logout
+Content-Type: application/json
+Authorization: Token b54cb2c60376afc11a78e23ffb53ae6712457c6d
+
+###
+
+POST http://127.0.0.1:8000/auth/register
+Content-Type: application/json
+
+{
+    "email": "mouhamad5@gmail.com",
+    "password": "clinic123123",
+    "first_name": "mouhamad",
+    "last_name": "alloush",
+    "dob": "2002-05-09",
+    "gender": "M",
+    "phone": "+963992820554",
+    "medical_history":{
+        "text": "hello world"
+    }
+}
+
+###
+
+POST http://127.0.0.1:8000/auth/password_change
+Content-Type: application/json
+Authorization: Token b54cb2c60376afc11a78e23ffb53ae6712457c6d
+
+{
+    "current_password": "clinic123123",
+    "new_password": "clinic1231234"
+}
