@@ -2,9 +2,16 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.models import BaseUserManager
-
+from .models import MedicalHistory
 User = get_user_model()
 
+class MedicalHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedicalHistory
+        fields = (
+            "text",
+            "last_modified",
+        )
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=300, required=True)
@@ -13,19 +20,26 @@ class UserLoginSerializer(serializers.Serializer):
 
 class UserRegisterSerializer(serializers.ModelSerializer):
 
+    medical_history = MedicalHistorySerializer(required=True)
+
     class Meta:
         model = User
         fields = (
-            "id",
             "email",
             "first_name",
             "last_name",
             "phone",
             "dob",
             "gender",
-            "medical_hitory",
             "password",
+            "medical_history",
         )
+
+    def validate_medical_history(self, value):
+        print("*****************************************************************")
+        d = MedicalHistory(text=value["text"],last_modified=(value["last_modified"]) if "last_modified" in value.keys() else "")
+        d.save()
+        return d
 
     def validate_email(self, value):
         user = User.objects.filter(email=value)
@@ -36,11 +50,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         password_validation.validate_password(value)
         return value
+    
+    
 
 
 class AuthUserSerializer(serializers.ModelSerializer):
     auth_token = serializers.SerializerMethodField()
-
+    medical_history = MedicalHistorySerializer()
     class Meta:
         model = User
         fields = (
@@ -51,15 +67,19 @@ class AuthUserSerializer(serializers.ModelSerializer):
             "phone",
             "dob",
             "gender",
-            "medical_hitory",
+            "medical_history",
             "is_active",
             "is_staff",
+            "auth_token",
         )
         read_only_fields = ("id", "is_active", "is_staff")
 
     def get_auth_token(self, obj):
-        token = Token.objects.create(user=obj)
-        return token.key
+        token = Token.objects.get_or_create(user=obj)
+        #token = Token.objects.create(user=obj)
+        print(token)
+        return token[0].key
+    
 
 
 class PasswordChangeSerializer(serializers.Serializer):

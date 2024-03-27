@@ -5,8 +5,9 @@ from django.core.exceptions import ImproperlyConfigured
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-
+from rest_framework.authtoken.models import Token
 from . import serializers
 from .utils import get_and_authenticate_user, create_user_account
 
@@ -19,12 +20,15 @@ class AuthViewSet(viewsets.GenericViewSet):
     permission_classes = [
         AllowAny,
     ]
+
     serializer_class = serializers.EmptySerializer
     serializer_classes = {
         "login": serializers.UserLoginSerializer,
         "register": serializers.UserRegisterSerializer,
         "password_change": serializers.PasswordChangeSerializer,
     }
+
+
 
     @action(
         methods=[
@@ -34,10 +38,12 @@ class AuthViewSet(viewsets.GenericViewSet):
     )
     def login(self, request):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exceptions=True)
+        serializer.is_valid(raise_exception=True)
         user = get_and_authenticate_user(**serializer.validated_data)
         data = serializers.AuthUserSerializer(user).data
         return Response(data=data, status=status.HTTP_200_OK)
+
+
 
     @action(
         methods=[
@@ -52,22 +58,35 @@ class AuthViewSet(viewsets.GenericViewSet):
         data = serializers.AuthUserSerializer(user).data
         return Response(data=data, status=status.HTTP_201_CREATED)
 
+
+
     @action(
         methods=[
             "POST",
         ],
         detail=False,
+        permission_classes=[
+            IsAuthenticated,
+        ],
+        authentication_classes=[
+            TokenAuthentication,
+        ],
     )
     def logout(self, request):
-        logout(request)
+        Token.objects.filter(user=request.user).delete()
         data = {"success": "Sucessfully logged out"}
         return Response(data=data, status=status.HTTP_200_OK)
+
+
 
     @action(
         methods=["POST"],
         detail=False,
         permission_classes=[
             IsAuthenticated,
+        ],
+        authentication_classes=[
+            TokenAuthentication,
         ],
     )
     def password_change(self, request):
@@ -76,6 +95,8 @@ class AuthViewSet(viewsets.GenericViewSet):
         request.user.set_password(serializer.validated_data["new_password"])
         request.user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):
