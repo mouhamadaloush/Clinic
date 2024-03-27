@@ -139,7 +139,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+test.rest
 # Spyder project settings
 .spyderproject
 .spyproject
