@@ -17,6 +17,8 @@ User = get_user_model()
 
 
 class AuthViewSet(viewsets.GenericViewSet):
+    queryset = User.objects.all()
+
     permission_classes = [
         AllowAny,
     ]
@@ -106,3 +108,4 @@ class AuthViewSet(viewsets.GenericViewSet):
             return self.serializer_classes[self.action]
 
         return super().get_serializer_class()
+    
