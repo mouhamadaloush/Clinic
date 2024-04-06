@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.authtoken.models import Token
+#from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.models import BaseUserManager
 from .models import MedicalHistory
@@ -55,7 +55,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 class AuthUserSerializer(serializers.ModelSerializer):
-    auth_token = serializers.SerializerMethodField()
     medical_history = MedicalHistorySerializer()
     class Meta:
         model = User
@@ -70,15 +69,9 @@ class AuthUserSerializer(serializers.ModelSerializer):
             "medical_history",
             "is_active",
             "is_staff",
-            "auth_token",
         )
-        read_only_fields = ("id", "is_active", "is_staff")
+        read_only_fields = ("id", "is_active")
 
-    def get_auth_token(self, obj):
-        token = Token.objects.get_or_create(user=obj)
-        #token = Token.objects.create(user=obj)
-        print(token)
-        return token[0].key
     
 
 
