@@ -1,10 +1,15 @@
 asgiref==3.7.2
+cffi==1.16.0
+cryptography==42.0.5
 dj-database-url==2.1.0
-Django==4.2.11 #5.0.3
+Django==4.2.11
 django-environ==0.11.2
+django-extensions==3.2.3
 django-phonenumber-field==7.3.0
+django-rest-knox==4.2.0
 djangorestframework==3.14.0
 phonenumbers==8.13.32
+pycparser==2.22
 python-dotenv==1.0.1
 pytz==2024.1
 sqlparse==0.4.4

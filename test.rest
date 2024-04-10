@@ -64,7 +64,7 @@ Content-Type: application/json
 
 POST http://127.0.0.1:8000/auth/login/
 Content-Type: application/json
-Authorization: Basic L2hvbWUvYWxsb3VzaC9jb2RpbmcvNC13ZWJkZXYvQ2xpbmljL2tub3hfYXV0aC5weTptb3VoYW1hZDdAZ21haWwuY29t
+Authorization: Basic bW91aGFtYWQ3QGdtYWlsLmNvbTpjbGluaWMxMjMxMjM=
 
 
 ###
