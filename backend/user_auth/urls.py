@@ -4,9 +4,10 @@ from django.urls import path, include
 
 
 router = routers.DefaultRouter(trailing_slash=True)
-router.register('', AuthViewSet, basename='user_auth')
+router.register("", AuthViewSet, basename="user_auth")
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('', include('knox.urls')),
+    path("", include(router.urls)),
+    path("", include("knox.urls")),
+    path("verification/", include("verify_email.urls")),
 ]

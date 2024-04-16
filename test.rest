@@ -15,7 +15,7 @@ POST https://clinic-ashen.vercel.app/auth/register
 Content-Type: application/json
 
 {
-    "email": "mouhamad5@gmail.com",
+    "email": "mouhamad565@gmail.com",
     "password": "clinic123123",
     "first_name": "mouhamad",
     "last_name": "alloush",

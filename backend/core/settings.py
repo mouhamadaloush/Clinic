@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     "knox",
     "django_extensions",
     "user_auth",
+    "verify_email.apps.VerifyEmailConfig",
 ]
 
 MIDDLEWARE = [
@@ -90,7 +92,7 @@ DATABASES = {
         "NAME": BASE_DIR / "db1.sqlite3",
     }
 }
-DATABASES ["default"] = dj_database_url.config()
+DATABASES["default"] = dj_database_url.config()
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -134,13 +136,13 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-'''REST_FRAMEWORK = {
+"""REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
         #"knox.auth.TokenAuthentication",  # Add Knox TokenAuthentication
     ]
 }
-'''
+"""
 
 from datetime import timedelta
 from rest_framework.settings import api_settings
@@ -158,4 +160,14 @@ REST_KNOX = {
 }
 
 
-AUTHENTICATION_BACKENDS = ['user_auth.auth_backend.EmailBackend']
+AUTHENTICATION_BACKENDS = ["user_auth.auth_backend.EmailBackend"]
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "mouhamad.aloush06@gmail.com"
+EMAIL_HOST_PASSWORD = "ssms vghb cxpf ueqm"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "Clinic mouhamad.aloush06@gmail.com"
