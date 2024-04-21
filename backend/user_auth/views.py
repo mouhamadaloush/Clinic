@@ -68,7 +68,7 @@ class AuthViewSet(viewsets.GenericViewSet):
     )
     def activate(self, request, pk=None):
         user_id = request.query_params.get("user_id", "")
-        confirmation_token = request.query_params.get("confirmation_token", "")
+        confirmation_token = request.query_params.get("confirmation_token", "")[0:-1:1]
         try:
             user = self.get_queryset().get(pk=user_id)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):

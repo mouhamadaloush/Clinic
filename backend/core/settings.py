@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "knox",
     "django_extensions",
     "user_auth",
-    "verify_email.apps.VerifyEmailConfig",
+    #"verify_email.apps.VerifyEmailConfig",
 ]
 
 MIDDLEWARE = [
