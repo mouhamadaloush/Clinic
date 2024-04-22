@@ -48,11 +48,13 @@ INSTALLED_APPS = [
     "knox",
     "django_extensions",
     "user_auth",
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -159,3 +161,9 @@ REST_KNOX = {
 
 
 AUTHENTICATION_BACKENDS = ['user_auth.auth_backend.EmailBackend']
+
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',  # Your frontend app's URL
+    'https://clinic-ashen.vercel.app',  # If necessary
+]
