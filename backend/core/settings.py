@@ -167,3 +167,4 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Your frontend app's URL
     'https://clinic-ashen.vercel.app',  # If necessary
 ]
+CORS_ALLOW_ALL_ORIGINS = True
