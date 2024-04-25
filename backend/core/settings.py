@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "user_auth",
     "corsheaders",
     "appointment",
+    #"verify_email.apps.VerifyEmailConfig",
 ]
 
 MIDDLEWARE = [
@@ -170,3 +171,14 @@ CORS_ALLOWED_ORIGINS = [
     "https://clinic-ashen.vercel.app",  # If necessary
 ]
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "mouhamad.aloush06@gmail.com"
+EMAIL_HOST_PASSWORD = "ssms vghb cxpf ueqm"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "Clinic mouhamad.aloush06@gmail.com"

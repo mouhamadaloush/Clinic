@@ -15,7 +15,7 @@ POST https://clinic-ashen.vercel.app/auth/register
 Content-Type: application/json
 
 {
-    "email": "mouhamad5@gmail.com",
+    "email": "mohamed_alosh@outlook.sa",
     "password": "clinic123123",
     "first_name": "mouhamad",
     "last_name": "alloush",
@@ -45,12 +45,12 @@ POST http://127.0.0.1:8000/auth/register/
 Content-Type: application/json
 
 {
-    "email": "mouhamad7@gmail.com",
+    "email": "mohamed_alosh@outlook.sa",
     "password": "clinic123123",
     "first_name": "mouhamad",
     "last_name": "alloush",
-    "dob": "2002-05-09",
     "gender": "M",
+    "dob": "2002-05-09",
     "phone": "+963992820554",
     "is_staff":"True",
     "medical_history":{
@@ -72,6 +72,12 @@ Authorization: Basic bW91aGFtYWQ3QGdtYWlsLmNvbTpjbGluaWMxMjMxMjM=
 POST http://127.0.0.1:8000/auth/logout
 Content-Type: application/json
 Authorization: Token 7041d1de7e669d0408d726e0213ba05cc102c2a0809cd491c89131074ee98bf5
+
+###
+
+GET http://127.0.0.1:8000/auth/activate/?user_id=1&confirmation_token=c5q9lm-9b513be42456af31b76b3a252350f64d/
+
+
 
 
 
