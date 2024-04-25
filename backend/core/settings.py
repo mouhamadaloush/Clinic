@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
@@ -48,13 +49,14 @@ INSTALLED_APPS = [
     "knox",
     "django_extensions",
     "user_auth",
-    'corsheaders',
+    "corsheaders",
+    "appointment",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    'corsheaders.middleware.CorsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -92,7 +94,7 @@ DATABASES = {
         "NAME": BASE_DIR / "db1.sqlite3",
     }
 }
-DATABASES ["default"] = dj_database_url.config()
+DATABASES["default"] = dj_database_url.config()
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -136,13 +138,13 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-'''REST_FRAMEWORK = {
+"""REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
         #"knox.auth.TokenAuthentication",  # Add Knox TokenAuthentication
     ]
 }
-'''
+"""
 
 from datetime import timedelta
 from rest_framework.settings import api_settings
@@ -160,11 +162,11 @@ REST_KNOX = {
 }
 
 
-AUTHENTICATION_BACKENDS = ['user_auth.auth_backend.EmailBackend']
+AUTHENTICATION_BACKENDS = ["user_auth.auth_backend.EmailBackend"]
 
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # Your frontend app's URL
-    'https://clinic-ashen.vercel.app',  # If necessary
+    "http://localhost:3000",  # Your frontend app's URL
+    "https://clinic-ashen.vercel.app",  # If necessary
 ]
 CORS_ALLOW_ALL_ORIGINS = True
