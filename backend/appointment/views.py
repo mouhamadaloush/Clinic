@@ -30,7 +30,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
 
     serializer_class = serializers.EmptySerializer
     serializer_classes = {
-        "book": serializers.AppointmentSerializer,
+        "make_appointment": serializers.AppointmentSerializer,
     }
 
     @action(
@@ -46,7 +46,9 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def make_appointment(self, request):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data
+        data["user"] = request.user.pk
+        serializer = self.get_serializer(data=data)
         print(request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -65,7 +67,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def get_user_appointments(self, request):
-        appointments = Appointment.objects.filter(user=request.data["id"])
+        appointments = Appointment.objects.filter(user=request.user)
         serializer = serializers.AppointmentSerializer(appointments, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -88,6 +90,23 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         dates = Appointment.objects.all()
         serializer = serializers.UnavailableDates(dates, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    @action(
+        methods=[
+            "DELETE",
+        ],
+        detail=False,
+        permission_classes=[
+            IsAuthenticated,
+        ],
+        authentication_classes=[
+            TokenAuthentication,
+        ],
+    )
+    def delete(self, request):
+        delete_it = Appointment.objects.get(chosen_date=request.data["chosen_date"])
+        delete_it.delete()
+        return Response({"message": "Deleted"}, status= status.HTTP_200_OK)
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):
