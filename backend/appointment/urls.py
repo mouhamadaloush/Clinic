@@ -4,8 +4,8 @@ from django.urls import path, include
 
 
 router = routers.DefaultRouter(trailing_slash=True)
-router.register('', AppointmentViewSet, basename='appointent')
+router.register("", AppointmentViewSet, basename="appointent")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

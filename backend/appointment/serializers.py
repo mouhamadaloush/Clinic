@@ -6,12 +6,12 @@ from pytz import timezone
 
 User = get_user_model()
 
+
 class UnavailableDates(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = (
-            "chosen_date",
-        )
+        fields = ("chosen_date",)
+
 
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,9 +26,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
         try:
             Appointment.objects.get(chosen_date=value)
         except Appointment.DoesNotExist:
-            now = datetime.datetime.now(tz=timezone('UTC'))
+            now = datetime.datetime.now(tz=timezone("UTC"))
             n = now + datetime.timedelta(days=30)
-            n = n.astimezone(timezone('UTC'))
+            n = n.astimezone(timezone("UTC"))
             if value > (n):
                 raise ValueError("You can't choose a date after a month from now.")
             if value < now:
@@ -37,6 +37,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
                 raise ValueError("invalid minute")
             return value
         raise ValueError("invalid date")
+
 
 class EmptySerializer(serializers.Serializer):
     pass
