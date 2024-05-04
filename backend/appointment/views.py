@@ -16,6 +16,9 @@ from django.utils.timezone import now
 import datetime
 from pytz import timezone
 
+
+from django.core.mail import EmailMessage
+
 # Create your views here.
 
 User = get_user_model()
@@ -90,7 +93,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         dates = Appointment.objects.all()
         serializer = serializers.UnavailableDates(dates, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
-    
+
     @action(
         methods=[
             "DELETE",
@@ -105,8 +108,18 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     )
     def delete(self, request):
         delete_it = Appointment.objects.get(chosen_date=request.data["chosen_date"])
+        if request.user.is_superuser:
+            patient = Appointment.objects.get(
+                chosen_date=request.data["chosen_date"]
+            ).user
+            user_name = patient.first_name + " " + patient.last_name
+            date = request.data["chosen_date"]
+            subject = "your appointment has been canceled!"
+            message = f"Dear {user_name},\nI hope this message finds you well. I am writing to express my sincerest apologies for the inconvenience caused by the cancellation of your dental appointment scheduled for [{date}].\nRegrettably, unforeseen circumstances have arisen that necessitate the rescheduling of appointments. While we always strive to maintain our schedule, occasionally, situations beyond our control arise, and we must adjust accordingly."
+            email = EmailMessage(subject, message, to=[patient.email])
+            email.send()
         delete_it.delete()
-        return Response({"message": "Deleted"}, status= status.HTTP_200_OK)
+        return Response({"message": "Deleted"}, status=status.HTTP_200_OK)
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):
