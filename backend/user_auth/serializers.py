@@ -1,17 +1,22 @@
 from rest_framework import serializers
-#from rest_framework.authtoken.models import Token
+
+# from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.models import BaseUserManager
 from .models import MedicalHistory
+
 User = get_user_model()
+
 
 class MedicalHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicalHistory
         fields = (
+            "user",
             "text",
             "last_modified",
         )
+
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=300, required=True)
@@ -19,8 +24,6 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-
-    medical_history = MedicalHistorySerializer(required=True)
 
     class Meta:
         model = User
@@ -32,14 +35,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             "dob",
             "gender",
             "password",
-            "medical_history",
         )
 
-    def validate_medical_history(self, value):
+    """def validate_medical_history(self, value):
         print("*****************************************************************")
         d = MedicalHistory(text=value["text"],last_modified=(value["last_modified"]) if "last_modified" in value.keys() else "")
         d.save()
-        return d
+        return d"""
 
     def validate_email(self, value):
         user = User.objects.filter(email=value)
@@ -50,12 +52,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         password_validation.validate_password(value)
         return value
-    
-    
 
 
 class AuthUserSerializer(serializers.ModelSerializer):
-    medical_history = MedicalHistorySerializer()
     class Meta:
         model = User
         fields = (
@@ -66,13 +65,10 @@ class AuthUserSerializer(serializers.ModelSerializer):
             "phone",
             "dob",
             "gender",
-            "medical_history",
             "is_active",
             "is_staff",
         )
         read_only_fields = ("id", "is_active")
-
-    
 
 
 class PasswordChangeSerializer(serializers.Serializer):
@@ -93,6 +89,7 @@ class EmptySerializer(serializers.Serializer):
     pass
 
 
+"""
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -102,9 +99,8 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "gender",
             "dob",
-            "medical_history",
             "email",
             "phone",
             "password",
         )
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {"password": {"write_only": True}}"""

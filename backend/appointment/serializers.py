@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from appointment.models import Appointment
+from appointment.models import *
 import datetime
 from pytz import timezone
 
@@ -37,6 +37,24 @@ class AppointmentSerializer(serializers.ModelSerializer):
                 raise ValueError("invalid minute")
             return value
         raise ValueError("invalid date")
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecordImage
+        fields = (
+            "record",
+            "image",
+        )
+
+
+class RecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Record
+        fields = (
+            "appointment",
+            "text_note",
+        )
 
 
 class EmptySerializer(serializers.Serializer):

@@ -1,20 +1,14 @@
-from django.shortcuts import render
-
-from django.contrib.auth import get_user_model, logout
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from . import serializers
-from .utils import get_and_authenticate_user, create_user_account
+from .utils import create_user_account
 
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
-from django.contrib.auth import login
 
 # Create your views here.
 
@@ -46,6 +40,10 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         user = create_user_account(**serializer.validated_data)
         data = serializers.AuthUserSerializer(user).data
+        mdata = request.data["medical_history"]
+        serializer = serializers.MedicalHistorySerializer(data=mdata)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(data=data, status=status.HTTP_201_CREATED)
 
     @action(
