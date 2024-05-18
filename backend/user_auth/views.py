@@ -1,18 +1,13 @@
-from django.shortcuts import render
-
-from django.contrib.auth import get_user_model, logout
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from . import serializers
-from .utils import get_and_authenticate_user, create_user_account
+from .utils import create_user_account
 
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
 from django.contrib.auth import login
 
@@ -45,17 +40,22 @@ class AuthViewSet(viewsets.GenericViewSet):
         detail=False,
     )
     def register(self, request):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         user = create_user_account(**serializer.validated_data)
-        data = serializers.AuthUserSerializer(user).data
+        if "medical_history" in [key for key,value in data.items()]:
+            mdata = request.data["medical_history"]
+            serializer = serializers.MedicalHistorySerializer(data=mdata)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
         confirmation_token = default_token_generator.make_token(user)
         actiavation_link = f"https://clinic-ashen.vercel.app/auth/activate/?user_id={user.id}&confirmation_token={confirmation_token}/"
         subject = "Verify Email"
         message = f"Here is you activation link : {actiavation_link}"
         email = EmailMessage(subject, message, to=[user.email])
         email.send()
-        return Response(data=data, status=status.HTTP_201_CREATED)
+        return Response(data=user.pk, status=status.HTTP_201_CREATED)
 
     @action(
         detail=False,

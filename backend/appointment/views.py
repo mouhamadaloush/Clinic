@@ -12,11 +12,11 @@ from appointment.models import Appointment
 from django.forms.models import model_to_dict
 from knox.auth import TokenAuthentication
 
+
+from pytz import timezone
 from django.utils.timezone import now
 import datetime
 from pytz import timezone
-
-
 from django.core.mail import EmailMessage
 
 # Create your views here.
@@ -25,6 +25,8 @@ User = get_user_model()
 
 
 class AppointmentViewSet(viewsets.GenericViewSet):
+    """this viewset is for doing stuff about or related to Appointment"""
+
     queryset = User.objects.all()
 
     permission_classes = [
@@ -49,13 +51,15 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def make_appointment(self, request):
+        """make Appointment"""
         data = request.data
-        data["user"] = request.user.pk
+        data["user"] = (
+            request.user.pk
+        )  # get the user's pk to make Appointment instance.
         serializer = self.get_serializer(data=data)
-        print(request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(data={"message": "success"}, status=status.HTTP_201_CREATED)
+        app = serializer.save()
+        return Response(data={"appointment_id": app.pk}, status=status.HTTP_201_CREATED)
 
     @action(
         methods=[
@@ -70,6 +74,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def get_user_appointments(self, request):
+        """get user done and schedueled appointments"""
         appointments = Appointment.objects.filter(user=request.user)
         serializer = serializers.AppointmentSerializer(appointments, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -87,10 +92,11 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def get_unavailable_dates(self, request):
-        current_date = now()
-        objects_to_delete = Appointment.objects.filter(chosen_date__lt=current_date)
-        objects_to_delete.delete()
-        dates = Appointment.objects.all()
+        """get the unavailable dates so that you can exceclude them in the frontend app"""
+        day = request.data["day"]
+        dates = Appointment.objects.filter(
+            chosen_date__gt=day, chosen_date__lte=day
+        ).order_by("chosen_date")
         serializer = serializers.UnavailableDates(dates, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -107,8 +113,8 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def delete(self, request):
-        delete_it = Appointment.objects.get(chosen_date=request.data["chosen_date"])
-        if request.user.is_superuser:
+        delete_it = Appointment.objects.get(pk=request.data["id"])
+        if request.user.is_staff:
             patient = Appointment.objects.get(
                 chosen_date=request.data["chosen_date"]
             ).user
@@ -120,6 +126,52 @@ class AppointmentViewSet(viewsets.GenericViewSet):
             email.send()
         delete_it.delete()
         return Response({"message": "Deleted"}, status=status.HTTP_200_OK)
+
+    @action(
+        methods=[
+            "POST",
+        ],
+        detail=False,
+        permission_classes=[
+            IsAuthenticated,
+        ],
+        authentication_classes=[
+            TokenAuthentication,
+        ],
+    )
+    def record(self, request):
+        """take some notes about the examination and make"""
+        if request.user.is_staff:
+            rec_serializer = serializers.RecordSerializer(data=request.data)
+            rec_serializer.is_valid(raise_exception=True)
+            record = rec_serializer.save()
+
+            images = request.FILES.getlist("images")
+            image_serializers = []
+            for image in images:
+                data = {
+                    "image": image,
+                    "record": record.pk,
+                }
+                print(image)
+                serializer = serializers.ImageSerializer(data=data)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                image_serializers.append(serializer)
+ 
+            return Response(
+                {
+                    "record": rec_serializer.data,
+                    # Serialize each saved image
+                    "images": [img.data for img in image_serializers],
+                    
+                    "message": "It is saved successfully",
+                    "status": status.HTTP_200_OK,
+                }
+            )
+        else:
+            print(request.user.is_staff)
+            raise PermissionError("You are not allowed to do this operation")
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):

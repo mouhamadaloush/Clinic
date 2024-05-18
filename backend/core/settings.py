@@ -121,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Damascus"
 
 USE_I18N = True
 
@@ -132,6 +132,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -156,7 +159,7 @@ REST_KNOX = {
     "TOKEN_TTL": timedelta(
         days=10
     ),  # The default is 10 hours i.e., timedelta(hours=10)).
-    "USER_SERIALIZER": "knox.serializers.UserSerializer",
+    "USER_SERIALIZER": "user_auth.serializers.UserIDSerializer",
     "TOKEN_LIMIT_PER_USER": None,  # By default, this option is disabled and set to None -- thus no limit.
     "AUTO_REFRESH": False,  # This defines if the token expiry time is extended by TOKEN_TTL each time the token is used.
     "EXPIRY_DATETIME_FORMAT": api_settings.DATETIME_FORMAT,

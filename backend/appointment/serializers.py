@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from appointment.models import Appointment
+from appointment.models import *
 import datetime
 from pytz import timezone
 
@@ -17,6 +17,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = (
+            "id",
             "user",
             "chosen_date",
             "reason_of_appointment",
@@ -26,9 +27,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
         try:
             Appointment.objects.get(chosen_date=value)
         except Appointment.DoesNotExist:
-            now = datetime.datetime.now(tz=timezone("UTC"))
+            now = datetime.datetime.now(tz=timezone("Asia/Damascus"))
             n = now + datetime.timedelta(days=30)
-            n = n.astimezone(timezone("UTC"))
+            n = n.astimezone(timezone("Asia/Damascus"))
             if value > (n):
                 raise ValueError("You can't choose a date after a month from now.")
             if value < now:
@@ -37,6 +38,24 @@ class AppointmentSerializer(serializers.ModelSerializer):
                 raise ValueError("invalid minute")
             return value
         raise ValueError("invalid date")
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecordImage
+        fields = (
+            "record",
+            "image",
+        )
+
+
+class RecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Record
+        fields = (
+            "appointment",
+            "text_note",
+        )
 
 
 class EmptySerializer(serializers.Serializer):

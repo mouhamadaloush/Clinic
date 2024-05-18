@@ -12,6 +12,7 @@ class MedicalHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicalHistory
         fields = (
+            "user",
             "text",
             "last_modified",
         )
@@ -24,8 +25,6 @@ class UserLoginSerializer(serializers.Serializer):
 
 class UserRegisterSerializer(serializers.ModelSerializer):
 
-    medical_history = MedicalHistorySerializer(required=True)
-
     class Meta:
         model = User
         fields = (
@@ -35,11 +34,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             "phone",
             "dob",
             "gender",
+            "is_staff",
             "password",
-            "medical_history",
         )
 
-    def validate_medical_history(self, value):
+    """def validate_medical_history(self, value):
         print("*****************************************************************")
         d = MedicalHistory(
             text=value["text"],
@@ -48,7 +47,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             ),
         )
         d.save()
-        return d
+        return d"""
 
     def validate_email(self, value):
         user = User.objects.filter(email=value)
@@ -62,8 +61,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 class AuthUserSerializer(serializers.ModelSerializer):
-    medical_history = MedicalHistorySerializer()
-
     class Meta:
         model = User
         fields = (
@@ -74,7 +71,6 @@ class AuthUserSerializer(serializers.ModelSerializer):
             "phone",
             "dob",
             "gender",
-            "medical_history",
             "is_active",
             "is_staff",
         )
@@ -99,18 +95,10 @@ class EmptySerializer(serializers.Serializer):
     pass
 
 
-class UserSerializer(serializers.ModelSerializer):
+
+class UserIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
             "id",
-            "first_name",
-            "last_name",
-            "gender",
-            "dob",
-            "medical_history",
-            "email",
-            "phone",
-            "password",
         )
-        extra_kwargs = {"password": {"write_only": True}}

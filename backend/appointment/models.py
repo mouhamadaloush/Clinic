@@ -13,3 +13,13 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.user}, {self.chosen_date}, {self.reason_of_appointment}"
+
+
+class Record(models.Model):
+    appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE)
+    text_note = models.TextField(blank=True)
+
+
+class RecordImage(models.Model):
+    record = models.ForeignKey(Record, on_delete=models.CASCADE)
+    image = models.ImageField(blank=True)
