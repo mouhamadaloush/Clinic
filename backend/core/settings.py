@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
+import cloudinary_storage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,7 +52,9 @@ INSTALLED_APPS = [
     "user_auth",
     "corsheaders",
     "appointment",
-    #"verify_email.apps.VerifyEmailConfig",
+    # "verify_email.apps.VerifyEmailConfig",
+    "cloudinary",
+    "cloudinary_storage",
 ]
 
 MIDDLEWARE = [
@@ -133,8 +136,11 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -174,7 +180,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://clinic-ashen.vercel.app",  # If necessary
 ]
 CORS_ALLOW_ALL_ORIGINS = True
-
 
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
