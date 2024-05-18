@@ -185,7 +185,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def get_record(self, request):
-        pk = request.data["id"]
+        pk = request.data["appointment_id"]
         record = Record.objects.get(appointment=pk)
         rec_serializer = serializers.RecordSerializer(record)
         images = RecordImage.objects.filter(record=pk)
