@@ -8,7 +8,7 @@ from appointment import serializers
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework import status
 
-from appointment.models import Appointment
+from appointment.models import Appointment, Record, RecordImage
 from django.forms.models import model_to_dict
 from knox.auth import TokenAuthentication
 
@@ -158,13 +158,12 @@ class AppointmentViewSet(viewsets.GenericViewSet):
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
                 image_serializers.append(serializer)
- 
+
             return Response(
                 {
                     "record": rec_serializer.data,
                     # Serialize each saved image
                     "images": [img.data for img in image_serializers],
-                    
                     "message": "It is saved successfully",
                     "status": status.HTTP_200_OK,
                 }
@@ -172,6 +171,32 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         else:
             print(request.user.is_staff)
             raise PermissionError("You are not allowed to do this operation")
+
+    @action(
+        methods=[
+            "GET",
+        ],
+        detail=False,
+        permission_classes=[
+            IsAuthenticated,
+        ],
+        authentication_classes=[
+            TokenAuthentication,
+        ],
+    )
+    def get_record(self, request):
+        pk = request.data["id"]
+        record = Record.objects.get(appointment=pk)
+        rec_serializer = serializers.RecordSerializer(record)
+        images = RecordImage.objects.filter(record=pk)
+        im_serializer = serializers.ImageSerializer(images, many=True)
+        return Response(
+            {
+                "record": rec_serializer.data,
+                "images": im_serializer.data,
+                "status": status.HTTP_200_OK,
+            }
+        )
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):

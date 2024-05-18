@@ -55,7 +55,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         message = f"Here is you activation link : {actiavation_link}"
         email = EmailMessage(subject, message, to=[user.email])
         email.send()
-        return Response(data=user.pk, status=status.HTTP_201_CREATED)
+        return Response(data={"message":"success"}, status=status.HTTP_201_CREATED)
 
     @action(
         detail=False,
