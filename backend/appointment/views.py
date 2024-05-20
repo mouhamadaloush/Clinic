@@ -113,7 +113,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def delete(self, request):
-        delete_it = Appointment.objects.get(pk=request.GET.get("id"))
+        delete_it = Appointment.objects.get(pk=request.data["id"])
         if request.user.is_staff:
             patient = Appointment.objects.get(
                 chosen_date=request.data["chosen_date"]
