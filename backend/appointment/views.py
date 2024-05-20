@@ -93,7 +93,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     )
     def get_unavailable_dates(self, request):
         """get the unavailable dates so that you can exceclude them in the frontend app"""
-        day = request.data["day"]
+        day = request.GET.get("day")
         dates = Appointment.objects.filter(
             chosen_date__gte=day, chosen_date__lte=day
         ).order_by("chosen_date")
@@ -113,7 +113,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def delete(self, request):
-        delete_it = Appointment.objects.get(pk=request.data["id"])
+        delete_it = Appointment.objects.get(pk=request.GET.get("id"))
         if request.user.is_staff:
             patient = Appointment.objects.get(
                 chosen_date=request.data["chosen_date"]
