@@ -115,9 +115,9 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     def delete(self, request):
         delete_it = Appointment.objects.get(pk=request.GET.get("id"))
         if request.user.is_staff:
-            patient = delete_it.user
+            patient = User.objects.get(pk=delete_it.user)
             user_name = patient.first_name + " " + patient.last_name
-            date = request.data["chosen_date"]
+            date = delete_it.chosen_date
             subject = "your appointment has been canceled!"
             message = f"Dear {user_name},\nI hope this message finds you well. I am writing to express my sincerest apologies for the inconvenience caused by the cancellation of your dental appointment scheduled for [{date}].\nRegrettably, unforeseen circumstances have arisen that necessitate the rescheduling of appointments. While we always strive to maintain our schedule, occasionally, situations beyond our control arise, and we must adjust accordingly."
             email = EmailMessage(subject, message, to=[patient.email])
