@@ -97,7 +97,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         dates = Appointment.objects.filter(chosen_date__gte=now()).order_by("chosen_date")
         dates = serializers.AppointmentSerializer(dates, many=True)
         for date in dates:
-            data[date.chosen_date.split()[0]] = date.chosen_date.split()[1]
+            data[str(date.chosen_date).split()[0]] = str(date.chosen_date).split()[1]
         return Response(data=data, status=status.HTTP_200_OK)
 
     @action(
