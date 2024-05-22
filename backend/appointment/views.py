@@ -115,7 +115,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     def delete(self, request):
         delete_it = Appointment.objects.get(pk=request.GET.get("id"))
         if request.user.is_staff:
-            patient = User.objects.get(pk=delete_it.user)
+            patient = delete_it.user
             user_name = patient.first_name + " " + patient.last_name
             date = delete_it.chosen_date
             subject = "your appointment has been canceled!"
