@@ -11,12 +11,11 @@ from rest_framework import status
 from appointment.models import Appointment, Record, RecordImage
 from django.forms.models import model_to_dict
 from knox.auth import TokenAuthentication
-
+from collections import defaultdict
 
 from pytz import timezone
 from django.utils.timezone import now
 import datetime
-from pytz import timezone
 from django.core.mail import EmailMessage
 
 # Create your views here.
@@ -93,11 +92,13 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     )
     def get_unavailable_dates(self, request):
         """get the unavailable dates so that you can exceclude them in the frontend app"""
-        data = {}
-        dates = Appointment.objects.filter(chosen_date__gte=now())
-        dates = serializers.AppointmentSerializer(dates, many=True).data
-        for date in dates:
-            data[str(date["chosen_date"]).split()[0]] = str(date["chosen_date"]).split()[1]
+        data = defaultdict(list)
+        appointments = Appointment.objects.filter(chosen_date__gte=now())
+        for appointment in appointments:
+            date = str(appointment.chosen_date).split()[0]  # Extract the date part
+            time = str(appointment.chosen_date).split()[1] #.split("+")[0]  # Extract the time part
+            data[date].append(time)
+        data = dict(data)
         return Response(data=data, status=status.HTTP_200_OK)
 
     @action(
