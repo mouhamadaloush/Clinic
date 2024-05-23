@@ -31,6 +31,8 @@ class AuthViewSet(viewsets.GenericViewSet):
         # "login": serializers.UserLoginSerializer,
         "register": serializers.UserRegisterSerializer,
         "password_change": serializers.PasswordChangeSerializer,
+        "list": serializers.AuthUserSerializer,
+        "retrieve": serializers.AuthUserSerializer,
     }
 
     @action(
@@ -44,7 +46,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         user = create_user_account(**serializer.validated_data)
-        if "medical_history" in [key for key,value in data.items()]:
+        if "medical_history" in [key for key, value in data.items()]:
             mdata = request.data["medical_history"]
             serializer = serializers.MedicalHistorySerializer(data=mdata)
             serializer.is_valid(raise_exception=True)
@@ -55,7 +57,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         message = f"Here is you activation link : {actiavation_link}"
         email = EmailMessage(subject, message, to=[user.email])
         email.send()
-        return Response(data={"message":"success"}, status=status.HTTP_201_CREATED)
+        return Response(data={"message": "success"}, status=status.HTTP_201_CREATED)
 
     @action(
         detail=False,

@@ -74,7 +74,7 @@ class AuthUserSerializer(serializers.ModelSerializer):
             "is_active",
             "is_staff",
         )
-        read_only_fields = ("id", "is_active")
+        read_only_fields = ("id", "is_active", "is_staff")
 
 
 class PasswordChangeSerializer(serializers.Serializer):
@@ -95,10 +95,7 @@ class EmptySerializer(serializers.Serializer):
     pass
 
 
-
 class UserIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = (
-            "id",
-        )
+        fields = ("id",)
