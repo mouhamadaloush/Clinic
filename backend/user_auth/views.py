@@ -2,14 +2,15 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from . import serializers
 from .utils import create_user_account
-
+from rest_framework import generics
 from knox.auth import TokenAuthentication
 from django.contrib.auth import login
+from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
@@ -34,6 +35,18 @@ class AuthViewSet(viewsets.GenericViewSet):
         "list": serializers.AuthUserSerializer,
         "retrieve": serializers.AuthUserSerializer,
     }
+
+    def list(self, request):
+        queryset = User.objects.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self, request, pk=None):
+        queryset = User.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
+
 
     @action(
         methods=[
@@ -107,6 +120,19 @@ class AuthViewSet(viewsets.GenericViewSet):
         return Response(
             data={"message": "Password changed successfuly!"}, status=status.HTTP_200_OK
         )
+
+
+    def get_permissions(self):
+        permission_classes = {
+            "list": IsAuthenticated,
+            "register": AllowAny,
+            "activate": AllowAny,
+            "password_change": IsAuthenticated,
+            "retrieve": IsAuthenticated,
+        }
+        print(f"*****{self.action}******")
+        return ([permission_classes[self.action]()])
+    
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):

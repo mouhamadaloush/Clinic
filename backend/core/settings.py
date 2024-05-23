@@ -98,7 +98,7 @@ DATABASES = {
         "NAME": BASE_DIR / "db1.sqlite3",
     }
 }
-DATABASES["default"] = dj_database_url.config()
+#DATABASES["default"] = dj_database_url.config()
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -153,13 +153,13 @@ DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-"""REST_FRAMEWORK = {
+REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
-        #"knox.auth.TokenAuthentication",  # Add Knox TokenAuthentication
+        "knox.auth.TokenAuthentication",  # Add Knox TokenAuthentication
     ]
 }
-"""
+
 
 from datetime import timedelta
 from rest_framework.settings import api_settings

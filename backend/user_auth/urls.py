@@ -7,8 +7,8 @@ router = routers.DefaultRouter(trailing_slash=True)
 router.register("", AuthViewSet, basename="user_auth")
 
 urlpatterns = [
-    path("", include(router.urls)),
     path("", include("knox.urls")),
+    path("", include(router.urls)),
     path("activate/<int:user_id>&<confirmation_token>/", AuthViewSet.activate),
     #path("verification/", include("verify_email.urls")),
 ]
