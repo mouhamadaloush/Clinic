@@ -8,7 +8,6 @@ from .managers import UserManager
 
 
 class User(AbstractUser):
-
     class GenderChoices(models.TextChoices):
         MALE = "M", "male"
         FEMALE = "F", "female"
@@ -19,12 +18,11 @@ class User(AbstractUser):
     dob = models.DateField(auto_now_add=True)
     phone = PhoneNumberField(region="SY")
     gender = models.CharField(choices=GenderChoices.choices, max_length=20)
-    # medical_history = models.OneToOneField(MedicalHistory, on_delete=models.CASCADE)
-
-    username = None
+    #some settings
+    username = None #deactivate username field
+    USERNAME_FIELD = "email" #set Email as username field
+    REQUIRED_FIELDS = [] #to not consider username as required field
     objects = UserManager()
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
 
     def __str__(self):
         return f"{self.pk} - {self.first_name} - {self.last_name}"
