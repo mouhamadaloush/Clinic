@@ -1,20 +1,18 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
+#rest
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-from . import serializers
-from .utils import create_user_account
-from rest_framework import generics
 from knox.auth import TokenAuthentication
-from django.contrib.auth import login
-from django.shortcuts import get_object_or_404
-
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
-
+#application
+from user_auth.utils import create_user_account
+from user_auth import serializers
 # Create your views here.
 
 User = get_user_model()
