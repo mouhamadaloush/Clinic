@@ -120,12 +120,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
             user_name = patient.first_name + " " + patient.last_name
             date = delete_it.chosen_date
             subject = "your appointment has been canceled!"
-            message = f"Dear {user_name},\nI hope this message finds you well.
-             I am writing to express my sincerest apologies for the inconvenience 
-             caused by the cancellation of your dental appointment scheduled for [{date}].
-             \nRegrettably, unforeseen circumstances have arisen that necessitate the rescheduling of appointments.
-               While we always strive to maintain our schedule, occasionally, 
-               situations beyond our control arise, and we must adjust accordingly."
+            message = f"Dear {user_name},\nI hope this message finds you well. I am writing to express my sincerest apologies for the inconvenience caused by the cancellation of your dental appointment scheduled for [{date}]. \nRegrettably, unforeseen circumstances have arisen that necessitate the rescheduling of appointments. While we always strive to maintain our schedule, occasionally, situations beyond our control arise, and we must adjust accordingly."
             email = EmailMessage(subject, message, to=[patient.email])
             email.send()
         delete_it.delete()
