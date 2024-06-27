@@ -24,18 +24,18 @@ class AppointmentSerializer(serializers.ModelSerializer):
         )
 
     def validate_chosen_date(self, value):
+        now = datetime.datetime.now(tz=timezone("Asia/Damascus"))
+        n = now + datetime.timedelta(days=30)
+        n = n.astimezone(timezone("Asia/Damascus"))
+        if value > (n):
+            raise ValueError("You can't choose a date after a month from now.")
+        if value < now:
+            raise ValueError("You can't choose a date in the past.")
+        if value.minute != 0 and value.minute != 30:
+            raise ValueError("invalid minute")
         try:
             Appointment.objects.get(chosen_date=value)
         except Appointment.DoesNotExist:
-            now = datetime.datetime.now(tz=timezone("Asia/Damascus"))
-            n = now + datetime.timedelta(days=30)
-            n = n.astimezone(timezone("Asia/Damascus"))
-            if value > (n):
-                raise ValueError("You can't choose a date after a month from now.")
-            if value < now:
-                raise ValueError("You can't choose a date in the past.")
-            if value.minute != 0 and value.minute != 30:
-                raise ValueError("invalid minute")
             return value
         raise ValueError("invalid date")
 
