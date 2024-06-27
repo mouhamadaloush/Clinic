@@ -38,17 +38,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             "password",
         )
 
-    """def validate_medical_history(self, value):
-        print("*****************************************************************")
-        d = MedicalHistory(
-            text=value["text"],
-            last_modified=(
-                (value["last_modified"]) if "last_modified" in value.keys() else ""
-            ),
-        )
-        d.save()
-        return d"""
-
     def validate_email(self, value):
         user = User.objects.filter(email=value)
         if user:

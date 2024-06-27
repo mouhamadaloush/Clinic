@@ -53,15 +53,18 @@ class AuthViewSet(viewsets.GenericViewSet):
         detail=False,
     )
     def register(self, request):
-        data = request.data
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        user = create_user_account(**serializer.validated_data)
-        if "medical_history" in [key for key, value in data.items()]:
+        """this method is for user registration"""
+        data = request.data #get the data from the request
+        serializer = self.get_serializer(data=data) #get the suitable serializer for the data
+        serializer.is_valid(raise_exception=True) #validate the data
+        user = create_user_account(**serializer.validated_data) #create the user
+        if "medical_history" in [key for key, value in data.items()]: #create the medical hisory if given
             mdata = request.data["medical_history"]
             serializer = serializers.MedicalHistorySerializer(data=mdata)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+        """note that we used here the default token generator from django library,
+        according to django documentation"""
         confirmation_token = default_token_generator.make_token(user)
         actiavation_link = f"https://clinic-ashen.vercel.app/auth/activate/?user_id={user.id}&confirmation_token={confirmation_token}/"
         subject = "Verify Email"
@@ -80,8 +83,9 @@ class AuthViewSet(viewsets.GenericViewSet):
         ],
     )
     def activate(self, request, pk=None):
+        """user activation"""
         user_id = request.query_params.get("user_id", "")
-        confirmation_token = request.query_params.get("confirmation_token", "")[0:-1:1]
+        confirmation_token = request.query_params.get("confirmation_token", "")[0:-1:1] #remove the trailing slash from the link
         try:
             user = self.get_queryset().get(pk=user_id)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
