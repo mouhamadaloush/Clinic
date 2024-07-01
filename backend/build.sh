@@ -10,4 +10,4 @@ echo "pip install done............"
 python3 manage.py makemigrations --noinput
 python3 manage.py migrate --noinput
 python3 manage.py collectstatic --noinput --clear
-python3 manage.py shell < "deletedb.py" 
+#python3 manage.py shell < "deletedb.py" 
