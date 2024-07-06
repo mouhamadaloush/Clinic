@@ -96,7 +96,6 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         now = datetime.datetime.now(tz=timezone("Asia/Damascus"))
         appointments = Appointment.objects.filter(chosen_date__gte=now)
         serializer = serializers.AppointmentSerializer(data=appointments, many=True)
-        serializer.is_valid(raise_exception=True)
         for appointment in serializer.data:
             date = str(appointment.chosen_date).split()[0]  # Extract the date part
             time = str(appointment.chosen_date).split()[1] #.split("+")[0]  # Extract the time part
