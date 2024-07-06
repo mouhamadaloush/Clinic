@@ -94,7 +94,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         """get the unavailable dates so that you can exceclude them in the frontend app"""
         data = defaultdict(list)
         appointments = Appointment.objects.filter(chosen_date__gte=now())
-        serializer = serializers.AppointmentSerializer(appointments, many=True)
+        serializer = serializers.AppointmentSerializer(data=appointments, many=True)
         serializer.is_valid(raise_exception=True)
         for appointment in appointments:
             date = str(appointment.chosen_date).split()[0]  # Extract the date part
