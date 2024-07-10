@@ -63,10 +63,9 @@ class AuthViewSet(viewsets.GenericViewSet):
             serializer = serializers.MedicalHistorySerializer(data=mdata)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-        """note that we used here the default token generator from django library,
-        according to django documentation"""
+        #Note that we used here the default token generator from django library, according to django documentation
         confirmation_token = default_token_generator.make_token(user)
-        actiavation_link = f"https://clinic-ashen.vercel.app/auth/activate/?user_id={user.id}&confirmation_token={confirmation_token}/"
+        actiavation_link = f"https://clinic-ashen.vercel.app/auth/activate/?user_id={user.id}&confirmation_token={confirmation_token}"
         subject = "Verify Email"
         message = f"Here is you activation link : {actiavation_link}"
         email = EmailMessage(subject, message, to=[user.email])
@@ -75,17 +74,15 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(
         detail=False,
-        permission_classes=[
-            AllowAny,
-        ],
         methods=[
             "get",
         ],
     )
-    def activate(self, request, pk=None):
+
+    def activate(self, request):
         """user activation"""
         user_id = request.query_params.get("user_id", "")
-        confirmation_token = request.query_params.get("confirmation_token", "")[0:-1:1] #remove the trailing slash from the link
+        confirmation_token = request.query_params.get("confirmation_token", "")
         try:
             user = self.get_queryset().get(pk=user_id)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
