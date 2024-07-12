@@ -98,8 +98,12 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         serializer = serializers.AppointmentSerializer(appointments, many=True)
         for appointment in serializer.data:
             print(appointment["chosen_date"])
-            date = str(appointment["chosen_date"]).split("T")[0]  # Extract the date part
-            time = str(appointment["chosen_date"]).split("T")[1] #.split("+")[0]  # Extract the time part
+            date = str(appointment["chosen_date"]).split("T")[
+                0
+            ]  # Extract the date part
+            time = str(appointment["chosen_date"]).split("T")[
+                1
+            ]  # .split("+")[0]  # Extract the time part
             data[date].append(time)
         data = dict(data)
         return Response(data=data, status=status.HTTP_200_OK)
@@ -117,7 +121,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def delete(self, request):
-        delete_it = Appointment.objects.get(pk=request.GET.get("id"))
+        delete_it = Appointment.objects.get(pk=request.query_params.get("id"))
         if request.user.is_staff:
             patient = delete_it.user
             user_name = patient.first_name + " " + patient.last_name
@@ -188,7 +192,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     )
     def get_record(self, request):
         "Get the record of an appointment"
-        pk = request.GET.get["appointment_id"]
+        pk = request.query_params.get["appointment_id"]
         record = Record.objects.get(appointment=pk)
         rec_serializer = serializers.RecordSerializer(record)
         images = RecordImage.objects.filter(record=pk)

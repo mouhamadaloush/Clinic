@@ -69,7 +69,11 @@ class AuthViewSet(viewsets.GenericViewSet):
         subject = "Verify Email"
         message = f"Here is you activation link : {actiavation_link}"
         email = EmailMessage(subject, message, to=[user.email])
-        email.send()
+        try:
+            email.send()
+        except:
+            user.delete()
+            return Response(data={"message":"error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(data={"message": "success"}, status=status.HTTP_201_CREATED)
 
     @action(
@@ -83,6 +87,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         """user activation"""
         user_id = request.query_params.get("user_id", "")
         confirmation_token = request.query_params.get("confirmation_token", "")
+        print("Success")
         try:
             user = self.get_queryset().get(pk=user_id)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
@@ -130,7 +135,11 @@ class AuthViewSet(viewsets.GenericViewSet):
             "retrieve": IsAuthenticated,
         }
         print(f"*****{self.action}******")
-        return ([permission_classes[self.action]()])
+        try:
+            x=permission_classes[self.action]
+            return ([x()])
+        except:
+            return([AllowAny()])
     
 
     def get_serializer_class(self):
