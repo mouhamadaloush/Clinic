@@ -110,6 +110,23 @@ class AppointmentViewSet(viewsets.GenericViewSet):
 
     @action(
         methods=[
+            "GET",
+        ],
+        detail=False,
+        permission_classes=[
+            IsAuthenticated,
+        ],
+        authentication_classes=[
+            TokenAuthentication,
+        ],
+    )
+    def list_appointments(self, request):
+        appointments = Appointment.objects.all()
+        serializer = serializers.AppointmentSerializer(appointments, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    @action(
+        methods=[
             "DELETE",
         ],
         detail=False,
@@ -176,7 +193,10 @@ class AppointmentViewSet(viewsets.GenericViewSet):
             )
         else:
             print(request.user.is_staff)
-            raise PermissionError("You are not allowed to do this operation")
+            return Response(
+                data={"message": "You are not allowed to do this operation"},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )
 
     @action(
         methods=[
@@ -193,17 +213,18 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     def get_record(self, request):
         "Get the record of an appointment"
         pk = request.query_params.get("appointment_id", "")
-        record = Record.objects.get(appointment=pk)
-        rec_serializer = serializers.RecordSerializer(record)
+        data = {}
+        try:
+            record = Record.objects.get(appointment=pk)
+            rec_serializer = serializers.RecordSerializer(record)
+            data["record"] = rec_serializer.data
+        except Record.DoesNotExist:
+            data["record"] = "None"
+
         images = RecordImage.objects.filter(record=pk)
         im_serializer = serializers.ImageSerializer(images, many=True)
-        return Response(
-            {
-                "record": rec_serializer.data,
-                "images": im_serializer.data,
-                "status": status.HTTP_200_OK,
-            }
-        )
+        data["images"] = im_serializer.data
+        return Response(data,status=status.HTTP_200_OK)
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):
