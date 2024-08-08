@@ -1,0 +1,78 @@
+.css-9npbnl-MuiFormLabel-root-MuiInputLabel-root {
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  margin-left: 12px;
+  padding-bottom: 4px !important;
+  color: white !important;
+}
+
+input,
+select {
+  background-color: #003c44;
+  outline: none;
+  padding: 0 25px 0 43px;
+  font-size: 18px;
+  height: 50px;
+  border-radius: 25px;
+  letter-spacing: 0.8px;
+  color: yellow;
+  border: 2px solid #5f8f94;
+}
+
+select {
+  color: #5f8f94;
+  padding-right: 15px;
+}
+
+select:focus {
+  color: yellow;
+}
+
+input::placeholder {
+  font-style: italic;
+  color: #5f8f94;
+}
+
+input[type="date"] {
+  color: #5f8f94;
+}
+
+input[type="date"]:focus {
+  color: yellow;
+}
+
+.images {
+  animation: img 5s infinite linear;
+  animation-delay: 1s;
+}
+
+@keyframes img {
+  0% {
+    transform: translateY(0px);
+  }
+
+  25% {
+    transform: translateY(20px);
+  }
+
+  50% {
+    transform: translateY(0px);
+  }
+
+  75% {
+    transform: translateY(-20px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@media (max-width: 480px) {
+  input {
+    height: 45px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 15px 0 45px;
+  }
+}

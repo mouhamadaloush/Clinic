@@ -1,0 +1,28 @@
+.textarea-record {
+  width: 94%;
+  height: 43%;
+  padding: 13px 20px;
+  font-size: 20px;
+  outline: none;
+  resize: none;
+  border-radius: 10px;
+  border-color: #ccc;
+  margin-top: 15px;
+  background-color: #fff;
+  /* color: gray; */
+}
+
+.upload-image-record {
+  padding: 0;
+  margin-bottom: 0px;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+@media (max-width: 520px) {
+  .textarea-record {
+    padding: 10px 15px;
+    font-size: 17px;
+  }
+}

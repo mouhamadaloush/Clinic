@@ -1,0 +1,102 @@
+.p-calendar {
+  width: 100%;
+  background-color: transparent !important;
+  height: 500px;
+}
+
+.p-datepicker-header {
+  background-color: transparent !important;
+  border: none;
+  padding-bottom: 20px;
+}
+
+.p-datepicker-title button {
+  color: yellow !important;
+}
+
+.p-datepicker-next,
+.p-datepicker-prev {
+  color: white;
+}
+
+.p-datepicker-next:hover,
+.p-datepicker-prev:hover {
+  background-color: #00929d;
+}
+
+span[data-pc-section="weekday"] {
+  color: yellow;
+}
+
+.p-datepicker {
+  background-color: transparent !important;
+  border: none;
+  color: white;
+}
+
+.p-datepicker-weeknumber,
+td[data-pc-section="day"] {
+  padding-top: 30px !important;
+}
+
+.p-disabled,
+span[data-pc-section="daylabel"] {
+  margin: auto;
+}
+
+.p-disabled:hover,
+span[data-pc-section="daylabel"]:hover {
+  color: yellow;
+  background-color: #003c44;
+}
+
+.p-datepicker table td.p-datepicker-today > span.p-highlight,
+.p-datepicker table td > span.p-highlight {
+  color: yellow !important;
+  background-color: #003c44 !important;
+}
+
+.textarea-appointment {
+  width: 94%;
+  height: 54%;
+  padding: 13px 20px;
+  font-size: 20px;
+  outline: none;
+  resize: none;
+  border-radius: 10px;
+  border-color: #ccc;
+  margin-top: 15px;
+  background-color: #fff;
+  /* color: gray; */
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+  height: 55px !important;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:hover {
+  outline: none !important;
+}
+
+@media (max-width: 599px) {
+  .p-calendar {
+    width: 450px;
+  }
+}
+
+@media (max-width: 520px) {
+  .textarea-appointment {
+    padding: 10px 15px;
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 480px) {
+  .p-calendar {
+    width: 320px;
+  }
+
+  input {
+    width: 305px;
+  }
+}
