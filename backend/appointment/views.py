@@ -121,9 +121,26 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         ],
     )
     def list_appointments(self, request):
-        appointments = Appointment.objects.all()
+        data = defaultdict(list)
+        now = datetime.datetime.now(tz=timezone("Asia/Damascus"))
+        appointments = Appointment.objects.filter(chosen_date__gte=now).order_by(
+            "chosen_date"
+        )
         serializer = serializers.AppointmentSerializer(appointments, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        for appointment in serializer.data:
+            print(appointment["chosen_date"])
+            date = str(appointment["chosen_date"]).split("T")[
+                0
+            ]  # Extract the date part
+            time = str(appointment["chosen_date"]).split("T")[
+                1
+            ]  # .split("+")[0]  # Extract the time part
+            appointment["time"] = time
+            del appointment["chosen_date"]
+            data[date].append(appointment)
+
+        data = dict(data)
+        return Response(data=data, status=status.HTTP_200_OK)
 
     @action(
         methods=[
@@ -224,7 +241,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         images = RecordImage.objects.filter(record=pk)
         im_serializer = serializers.ImageSerializer(images, many=True)
         data["images"] = im_serializer.data
-        return Response(data,status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):
