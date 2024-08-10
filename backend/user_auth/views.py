@@ -35,7 +35,7 @@ class AuthViewSet(viewsets.GenericViewSet):
     }
 
     def list(self, request):
-        queryset = User.objects.all()
+        queryset = User.objects.filter(is_active__e=True)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     

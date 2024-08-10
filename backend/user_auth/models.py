@@ -16,7 +16,7 @@ class User(AbstractUser):
     first_name = models.CharField("first name", max_length=255, default="")
     last_name = models.CharField("last name", max_length=255, default="")
     dob = models.DateField(auto_now_add=True)
-    phone = PhoneNumberField(region="SY")
+    phone = PhoneNumberField(region="SY", unique=True)
     gender = models.CharField(choices=GenderChoices.choices, max_length=20)
     #some settings
     username = None #deactivate username field
