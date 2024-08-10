@@ -74,10 +74,26 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     )
     def get_user_appointments(self, request):
         """get user done and schedueled appointments"""
-        appointments = Appointment.objects.filter(user=request.user)
+        data = defaultdict(list)
+        now = datetime.datetime.now(tz=timezone("Asia/Damascus"))
+        appointments = Appointment.objects.filter(user=request.user).order_by(
+            "chosen_date"
+        )
         serializer = serializers.AppointmentSerializer(appointments, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        for appointment in serializer.data:
+            print(appointment["chosen_date"])
+            date = str(appointment["chosen_date"]).split("T")[
+                0
+            ]  # Extract the date part
+            time = str(appointment["chosen_date"]).split("T")[
+                1
+            ]  # .split("+")[0]  # Extract the time part
+            appointment["time"] = time
+            del appointment["chosen_date"]
+            data[date].append(appointment)
 
+        data = dict(data)
+        return Response(data=data, status=status.HTTP_200_OK)
     @action(
         methods=[
             "GET",
