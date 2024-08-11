@@ -22,15 +22,17 @@ const MakeRecordAppointment = () => {
 
   useEffect(() => {}, []);
 
-  const setImagesHandler = (imgs) => {
-    setImages(imgs);
+  const setImagesHandler = (event) => {
+    // Access the selected files from the event object
+    const selectedImages = event.target.files;
+
+    // Update the images state with the selected files
+    setImages(selectedImages);
 
     let arrayOfImages = [];
-
-    Array.from(imgs).map((img) => {
+    Array.from(selectedImages).map((img) => {
       arrayOfImages.push(img.name);
     });
-
     setImagesArray(arrayOfImages);
   };
 
@@ -43,10 +45,7 @@ const MakeRecordAppointment = () => {
 
     formData.append("appointment", id);
     formData.append("text_note", text);
-
-    for (let i = 0; i < images.length; i++) {
-      formData.append(`images[${i}]`, images[i]);
-    }
+    formData.append("images", images);
 
     console.log(images);
 
