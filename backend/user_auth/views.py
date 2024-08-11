@@ -32,6 +32,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         "password_change": serializers.PasswordChangeSerializer,
         "list": serializers.AuthUserSerializer,
         "retrieve": serializers.AuthUserSerializer,
+        "delete": serializers.AuthUserSerializer
     }
 
     def list(self, request):
@@ -45,6 +46,18 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(user)
         return Response(serializer.data)
 
+    @action(
+        methods=[
+            "DELETE",
+        ],
+        detail=False,
+    )
+    def delete(self,request,pk=None):
+        queryset = User.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = self.get_serializer(user)
+        serializer.delete()
+        return Response(data={"message": "success"}, status=status.HTTP_200_OK)
 
     @action(
         methods=[
