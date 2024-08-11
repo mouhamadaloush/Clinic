@@ -40,9 +40,9 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request):
         queryset = User.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
+        user = get_object_or_404(queryset, pk=request.data["pk"])
         serializer = self.get_serializer(user)
         return Response(serializer.data)
 
