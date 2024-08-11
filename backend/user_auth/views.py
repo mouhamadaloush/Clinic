@@ -56,7 +56,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         queryset = User.objects.all()
         user = get_object_or_404(queryset, pk=request.data["pk"])
         serializer = self.get_serializer(user)
-        serializer.delete()
+        user.delete()
         return Response(data={"message": "success"}, status=status.HTTP_200_OK)
 
     @action(
