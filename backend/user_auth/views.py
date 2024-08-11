@@ -40,9 +40,9 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
-    def retrieve(self, request):
+    def retrieve(self, request, pk=None):
         queryset = User.objects.all()
-        user = get_object_or_404(queryset, pk=request.data["pk"])
+        user = get_object_or_404(queryset, pk=pk)
         serializer = self.get_serializer(user)
         return Response(serializer.data)
 
@@ -52,9 +52,9 @@ class AuthViewSet(viewsets.GenericViewSet):
         ],
         detail=False,
     )
-    def delete(self,request,pk=None):
+    def delete(self,request):
         queryset = User.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
+        user = get_object_or_404(queryset, pk=request.data["pk"])
         serializer = self.get_serializer(user)
         serializer.delete()
         return Response(data={"message": "success"}, status=status.HTTP_200_OK)
