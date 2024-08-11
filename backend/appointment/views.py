@@ -18,6 +18,7 @@ from django.utils.timezone import now
 import datetime
 from django.core.mail import EmailMessage
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
 # Create your views here.
 
 User = get_user_model()
@@ -198,6 +199,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     def record(self, request):
         """take some notes about the examination and make"""
         if request.user.is_staff:
+            print(request.data)
             rec_serializer = serializers.RecordSerializer(data=request.data)
             rec_serializer.is_valid(raise_exception=True)
             record = rec_serializer.save()
@@ -206,7 +208,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
             image_serializers = []
             for image in images:
                 data = {
-                    "image": image,
+                    "image": InMemoryUploadedFile(image),
                     "record": record.pk,
                 }
                 print(image)
