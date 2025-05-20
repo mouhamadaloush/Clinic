@@ -1,2 +1,2 @@
 # Clinic
-This is a back end application for a clinic.
+This is a backend application for a clinic.
