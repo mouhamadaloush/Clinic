@@ -22,4 +22,4 @@ class Record(models.Model):
 
 class RecordImage(models.Model):
     record = models.ForeignKey(Record, on_delete=models.CASCADE)
-    image = models.ImageField(blank=True)
+    image = models.TextField(blank=True)

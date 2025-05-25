@@ -204,11 +204,11 @@ class AppointmentViewSet(viewsets.GenericViewSet):
             rec_serializer.is_valid(raise_exception=True)
             record = rec_serializer.save()
 
-            images = request.FILES.getlist("images")
+            images = request.data["images"]
             image_serializers = []
             for image in images:
                 data = {
-                    "image": InMemoryUploadedFile(image),
+                    "image": image,
                     "record": record.pk,
                 }
                 print(image)
