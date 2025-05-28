@@ -256,7 +256,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         except Record.DoesNotExist:
             data["record"] = "None"
 
-        images = RecordImage.objects.filter(record=pk)
+        images = RecordImage.objects.filter(appointment=pk)
         im_serializer = serializers.ImageSerializer(images, many=True)
         data["images"] = im_serializer.data
         return Response(data, status=status.HTTP_200_OK)
