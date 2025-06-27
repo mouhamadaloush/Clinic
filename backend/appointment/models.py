@@ -23,3 +23,4 @@ class Record(models.Model):
 class RecordImage(models.Model):
     record = models.ForeignKey(Record, on_delete=models.CASCADE)
     image = models.TextField(blank=True)
+    mime_type = models.CharField(max_length=100, blank=True, null=True)

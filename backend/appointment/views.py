@@ -208,7 +208,8 @@ class AppointmentViewSet(viewsets.GenericViewSet):
             image_serializers = []
             for image in images:
                 data = {
-                    "image": image,
+                    "mime_type": image["mime_type"],
+                    "image": image["encoded_data"],
                     "record": record.pk,
                 }
                 print(image)
