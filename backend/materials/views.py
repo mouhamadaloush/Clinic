@@ -1,20 +1,15 @@
-from materials.models import Material
-from materials.serializers import MaterialSerializer, MaterialUpdateSerializer
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAdminUser
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import viewsets, permissions
+from .models import Material
+from .serializers import MaterialSerializer
 
-# Create your views here.
+class MaterialPagination(PageNumberPagination):
+    page_size = 10  # Default page size
+    page_size_query_param = 'page_size'  # Allows client to override
+    max_page_size = 100  # Maximum limit client can request
 
-
-class MaterialsAPIView(GenericViewSet, RetrieveUpdateDestroyAPIView, ListCreateAPIView):
+class MaterialViewSet(viewsets.ModelViewSet):
     queryset = Material.objects.all()
-    permission_classes = [IsAdminUser,IsAuthenticated,]
-
-    def get_serializer_class(self):
-        if self.request.method in ["GET", "POST", "DELETE"]:
-            return MaterialSerializer
-        elif self.request.method in ["PUT", "PATCH"]:
-            return MaterialUpdateSerializer
-        return super().get_serializer_class()
+    serializer_class = MaterialSerializer
+    pagination_class = MaterialPagination  # Apply only to this ViewSet
+    permission_classes = [permissions.IsAuthenticated]  # Adjust as needed
