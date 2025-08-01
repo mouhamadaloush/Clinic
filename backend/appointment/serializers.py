@@ -43,10 +43,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecordImage
-        fields = (
-            "record",
-            "image",
-        )
+        fields = '__all__' # This will automatically include 'gemini_analysis'
 
 
 class RecordSerializer(serializers.ModelSerializer):

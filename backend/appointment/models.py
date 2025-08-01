@@ -24,3 +24,6 @@ class RecordImage(models.Model):
     record = models.ForeignKey(Record, on_delete=models.CASCADE)
     image = models.TextField(blank=True)
     mime_type = models.CharField(max_length=100, blank=True, null=True)
+    mime_type = models.CharField(max_length=50)
+    # New field to store the analysis text received from the Gemini API
+    gemini_analysis = models.TextField(blank=True, null=True)

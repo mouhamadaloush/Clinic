@@ -197,3 +197,6 @@ EMAIL_HOST_PASSWORD = "lsqx qinr kwtv psov"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "Clinic mouhamad.aloush06@gmail.com"
+
+
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
