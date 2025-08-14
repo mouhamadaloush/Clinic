@@ -154,9 +154,11 @@ class AppointmentViewSet(viewsets.GenericViewSet):
             "reason_of_appointment": "string"
         }
         """
+        data = request.data
+        data["user"] = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        appointment = serializer.save(user=request.user)
+        appointment = serializer.save()
         return Response({"appointment_id": appointment.pk}, status=status.HTTP_201_CREATED)
 
     @action(methods=["GET"], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[TokenAuthentication])
