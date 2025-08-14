@@ -37,7 +37,16 @@ class AppointmentViewSet(viewsets.GenericViewSet):
 
     def _group_appointments_by_date(self, appointments):
         """
-        Groups a queryset of appointments by date.
+        Group appointments by date.
+
+        This method takes a queryset of appointments and groups them into a dictionary
+        where keys are dates and values are lists of appointments for that date.
+
+        Parameters:
+        - appointments: A queryset of Appointment objects.
+
+        Returns:
+        - A dictionary of appointments grouped by date.
         """
         serializer = serializers.AppointmentSerializer(appointments, many=True)
         grouped_data = defaultdict(list)
@@ -52,7 +61,18 @@ class AppointmentViewSet(viewsets.GenericViewSet):
 
     def _get_gemini_analysis(self, encoded_data, mime_type, record_pk):
         """
-        Calls the Gemini API to analyze an image and returns the analysis text.
+        Get image analysis from Gemini API.
+
+        This method sends an encoded image to the Gemini API for analysis and returns
+        the analysis text.
+
+        Parameters:
+        - encoded_data: Base64-encoded image data.
+        - mime_type: The MIME type of the image.
+        - record_pk: The primary key of the record associated with the image.
+
+        Returns:
+        - A string containing the analysis from Gemini or an error message.
         """
         gemini_api_key = settings.GEMINI_API_KEY
         if not gemini_api_key:
@@ -84,7 +104,17 @@ class AppointmentViewSet(viewsets.GenericViewSet):
 
     def _process_and_save_image(self, image_item, record):
         """
-        Processes a single image, sends it for analysis, and saves it.
+        Process and save an image.
+
+        This method processes a single image, sends it for analysis, and saves it
+        to the database.
+
+        Parameters:
+        - image_item: A dictionary containing the encoded image data and MIME type.
+        - record: The Record object to associate the image with.
+
+        Returns:
+        - The saved RecordImage object or None if processing fails.
         """
         encoded_data = image_item.get("encoded_data")
         mime_type = image_item.get("mime_type")
@@ -111,7 +141,18 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     @action(methods=["POST"], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[TokenAuthentication])
     def make_appointment(self, request):
         """
-        Creates a new appointment for the authenticated user.
+        Make a new appointment.
+
+        This endpoint allows an authenticated user to create a new appointment.
+
+        Permissions:
+        - User must be authenticated.
+
+        Request Body:
+        {
+            "chosen_date": "YYYY-MM-DDTHH:MM:SSZ",
+            "reason_of_appointment": "string"
+        }
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -121,7 +162,13 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     @action(methods=["GET"], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[TokenAuthentication])
     def get_user_appointments(self, request):
         """
-        Retrieves all appointments for the authenticated user, grouped by date.
+        Get user's appointments.
+
+        This endpoint retrieves all appointments for the currently authenticated user,
+        grouped by date.
+
+        Permissions:
+        - User must be authenticated.
         """
         appointments = Appointment.objects.filter(user=request.user).order_by("chosen_date")
         grouped_data = self._group_appointments_by_date(appointments)
@@ -130,7 +177,13 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     @action(methods=["GET"], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[TokenAuthentication])
     def get_unavailable_dates(self, request):
         """
-        Retrieves a list of all upcoming appointment times that are already booked.
+        Get unavailable appointment dates.
+
+        This endpoint retrieves a list of all upcoming appointment times that are
+        already booked, helping users to choose a vacant slot.
+
+        Permissions:
+        - User must be authenticated.
         """
         now = datetime.datetime.now(tz=timezone("Asia/Damascus"))
         appointments = Appointment.objects.filter(chosen_date__gte=now)
@@ -148,7 +201,13 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     @action(methods=["GET"], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[TokenAuthentication])
     def list_appointments(self, request):
         """
-        Retrieves a list of all upcoming appointments, grouped by date.
+        List all upcoming appointments.
+
+        This endpoint retrieves a list of all upcoming appointments, grouped by date.
+        It is intended for staff members to view the schedule.
+
+        Permissions:
+        - User must be authenticated and staff.
         """
         now = datetime.datetime.now(tz=timezone("Asia/Damascus"))
         appointments = Appointment.objects.filter(chosen_date__gte=now).order_by("chosen_date")
@@ -158,7 +217,16 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     @action(methods=["DELETE"], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[TokenAuthentication])
     def delete(self, request):
         """
-        Deletes an appointment by its ID.
+        Delete an appointment by ID.
+
+        This endpoint deletes an appointment by its ID. If the user is a staff member,
+        an email notification is sent to the patient about the cancellation.
+
+        Permissions:
+        - User must be authenticated.
+
+        Query Parameters:
+        - id: The ID of the appointment to delete.
         """
         appointment = get_object_or_404(Appointment, pk=request.query_params.get("id"))
 
@@ -177,7 +245,25 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     @action(methods=["POST"], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[TokenAuthentication])
     def record(self, request):
         """
-        Creates a medical record for an appointment, including notes and X-ray images.
+        Create a medical record.
+
+        This endpoint creates a medical record for an appointment, including textual notes
+        and dental X-ray images. Image analysis is performed using the Gemini API.
+
+        Permissions:
+        - User must be authenticated and staff.
+
+        Request Body:
+        {
+            "appointment": <appointment_id>,
+            "text_note": "string",
+            "images": [
+                {
+                    "encoded_data": "base64_encoded_image_data",
+                    "mime_type": "image/jpeg"
+                }
+            ]
+        }
         """
         if not request.user.is_staff:
             return Response({"message": "You are not allowed to perform this operation."}, status=status.HTTP_403_FORBIDDEN)
@@ -203,7 +289,16 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     @action(methods=["GET"], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[TokenAuthentication])
     def get_record(self, request):
         """
-        Retrieves the medical record associated with a specific appointment.
+        Get a medical record.
+
+        This endpoint retrieves the medical record associated with a specific appointment,
+        including any attached images.
+
+        Permissions:
+        - User must be authenticated.
+
+        Query Parameters:
+        - appointment_id: The ID of the appointment to retrieve the record for.
         """
         appointment_id = request.query_params.get("appointment_id")
         record = Record.objects.filter(appointment=appointment_id).first()
@@ -221,6 +316,12 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         })
 
     def get_serializer_class(self):
+        """
+        Get the appropriate serializer class for the action.
+
+        This method returns the serializer class based on the current action,
+        allowing for different serializers to be used for different actions.
+        """
         if not isinstance(self.serializer_classes, dict):
             raise ImproperlyConfigured("serializer_classes must be a dictionary")
         return self.serializer_classes.get(self.action, self.serializer_class)

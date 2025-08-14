@@ -8,12 +8,23 @@ User = get_user_model()
 
 
 class UnavailableDates(serializers.ModelSerializer):
+    """
+    Serializer for unavailable appointment dates.
+
+    This serializer is used to represent the dates and times that are already
+    booked for appointments.
+    """
     class Meta:
         model = Appointment
         fields = ("chosen_date",)
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating and viewing appointments.
+
+    This serializer handles the validation and serialization of appointment data.
+    """
     class Meta:
         model = Appointment
         fields = (
@@ -24,6 +35,16 @@ class AppointmentSerializer(serializers.ModelSerializer):
         )
 
     def validate_chosen_date(self, value):
+        """
+        Validate the chosen appointment date.
+
+        This method ensures that the chosen date is within the allowed range
+        (not in the past and not more than 30 days in the future) and that the
+        time slot is available.
+
+        Raises:
+        - ValueError: If the date is invalid or the time slot is already booked.
+        """
         now = datetime.datetime.now(tz=timezone("Asia/Damascus"))
         n = now + datetime.timedelta(days=30)
         n = n.astimezone(timezone("Asia/Damascus"))
@@ -41,12 +62,24 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 
 class ImageSerializer(serializers.ModelSerializer):
+    """
+    Serializer for record images.
+
+    This serializer handles the serialization of dental X-ray images, including
+    the image data and the analysis from the Gemini API.
+    """
     class Meta:
         model = RecordImage
         fields = '__all__' # This will automatically include 'gemini_analysis'
 
 
 class RecordSerializer(serializers.ModelSerializer):
+    """
+    Serializer for medical records.
+
+    This serializer handles the serialization of medical records, which include
+    textual notes and are associated with an appointment.
+    """
     class Meta:
         model = Record
         fields = (
@@ -56,4 +89,10 @@ class RecordSerializer(serializers.ModelSerializer):
 
 
 class EmptySerializer(serializers.Serializer):
+    """
+    An empty serializer.
+
+    This serializer is used for actions that do not require any specific data
+    to be serialized or deserialized.
+    """
     pass
