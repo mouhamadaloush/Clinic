@@ -232,11 +232,19 @@ class AuthViewSet(viewsets.GenericViewSet):
         return self.serializer_classes.get(self.action, self.serializer_class)
 
 
-from knox.views import LoginView as KnoxLoginView
 
+
+from knox.views import LoginView as KnoxLoginView
 
 class LoginView(KnoxLoginView):
     def post(self, request, format=None):
+        # The super().post() method handles the login, and if successful,
+        # it attaches the authenticated user to request.user
         response = super().post(request, format=None)
-        response.data["user"]["is_staff"] = self.user.is_staff
+
+        # Check if the login was successful before modifying the response
+        if response.status_code == 200:
+            # Access the user from the request object, not self
+            response.data["user"]["is_staff"] = request.user.is_staff
+        
         return response
