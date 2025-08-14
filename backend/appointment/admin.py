@@ -37,7 +37,7 @@ class AppointmentAdmin(admin.ModelAdmin):
     """
     Customizes the admin interface for the Appointment model.
     """
-    list_display = ('user', 'chosen_date', 'reason_of_appointment', 'has_record')
+    list_display = ('pk', 'user', 'chosen_date', 'reason_of_appointment', 'has_record')
     list_filter = ('chosen_date',)
     search_fields = ('user__email', 'user__first_name', 'user__last_name', 'reason_of_appointment')
     date_hierarchy = 'chosen_date'
