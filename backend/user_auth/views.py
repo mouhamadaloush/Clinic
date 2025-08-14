@@ -230,3 +230,13 @@ class AuthViewSet(viewsets.GenericViewSet):
         if not isinstance(self.serializer_classes, dict):
             raise ImproperlyConfigured("serializer_classes must be a dictionary")
         return self.serializer_classes.get(self.action, self.serializer_class)
+
+
+from knox.views import LoginView as KnoxLoginView
+
+
+class LoginView(KnoxLoginView):
+    def post(self, request, format=None):
+        response = super().post(request, format=None)
+        response.data["user"]["is_staff"] = self.user.is_staff
+        return response
