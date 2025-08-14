@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='gemini_analysis',
             field=models.TextField(blank=True, null=True),
         ),
-        migrations.AddField(
+        migrations.AlterField(
             model_name='recordimage',
             name='mime_type',
             field=models.CharField(default='png', max_length=50, null=True),
