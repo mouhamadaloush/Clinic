@@ -155,7 +155,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         }
         """
         data = request.data
-        data["user"] = request.user
+        data["user"] = request.user.pk
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         appointment = serializer.save()
