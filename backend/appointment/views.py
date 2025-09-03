@@ -317,6 +317,24 @@ class AppointmentViewSet(viewsets.GenericViewSet):
             "images": im_serializer.data,
         })
 
+    @action(methods=['GET'], detail=False, permission_classes=[IsAuthenticated])
+    def list_all_appointments(self, request):
+        """
+        List all appointments.
+
+        This endpoint retrieves a list of all appointments, ordered by date.
+        It is intended for staff members to view the entire schedule.
+
+        Permissions:
+        - User must be authenticated and a staff member.
+        """
+        if not request.user.is_staff:
+            return Response({"message": "You are not allowed to perform this operation."}, status=status.HTTP_403_FORBIDDEN)
+
+        appointments = Appointment.objects.all().order_by('appointment_date')
+        serializer = self.get_serializer(appointments, many=True)
+        return Response(serializer.data)
+
     def get_serializer_class(self):
         """
         Get the appropriate serializer class for the action.
