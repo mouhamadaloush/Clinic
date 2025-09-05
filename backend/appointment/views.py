@@ -33,6 +33,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
     serializer_class = serializers.EmptySerializer
     serializer_classes = {
         "make_appointment": serializers.AppointmentSerializer,
+        "list_all_appointments": serializers.AppointmentSerializer,
     }
 
     def _group_appointments_by_date(self, appointments):
