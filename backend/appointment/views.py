@@ -331,7 +331,7 @@ class AppointmentViewSet(viewsets.GenericViewSet):
         if not request.user.is_staff:
             return Response({"message": "You are not allowed to perform this operation."}, status=status.HTTP_403_FORBIDDEN)
 
-        appointments = Appointment.objects.all().order_by('appointment_date')
+        appointments = Appointment.objects.all().order_by('chosen_date')
         serializer = self.get_serializer(appointments, many=True)
         return Response(serializer.data)
 
