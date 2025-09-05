@@ -334,7 +334,15 @@ class AppointmentViewSet(viewsets.GenericViewSet):
 
         appointments = Appointment.objects.all().order_by('chosen_date')
         serializer = self.get_serializer(appointments, many=True)
-        return Response(serializer.data)
+        data = serializer.data
+        for appointment in data:
+            try:
+                record = Record.objects.get(appointment=appointment["id"])
+                appointment["has_record"] = True
+            except:
+                appointment["has_record"] = False
+
+        return Response(data)
 
     def get_serializer_class(self):
         """
