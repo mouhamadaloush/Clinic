@@ -4,6 +4,7 @@ import Specialty from "@/components/home/Specialty";
 import Image from "next/image";
 
 export default function Home() {
+
   return (
     <main className="outfit-font">
       <MainSection />
