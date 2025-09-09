@@ -1,8 +1,13 @@
+"use client"
+
+import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
 const MainSection = () => {
+  const { isAuthenticated, token, expiry, userId, isStaff } = useAuth();
+
   return (
     <div className='outfit-font'>
       <div className='bg-mainColor w-full h-auto mt-[26px] flex

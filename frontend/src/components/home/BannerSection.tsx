@@ -1,9 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
-import Image from 'next/image'
+"use client"
+
+import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 import React from 'react'
 
 const BannerSection = () => {
+
+  const {isAuthenticated} = useAuth();
+
   return (
     <div className='flex bg-mainColor rounded-lg px-6 sm:px-10 md:px-14 lg:px-12 my-10 md:mx-10'>
       {/* left side */}
@@ -12,7 +17,11 @@ const BannerSection = () => {
           <p>Book Appointment </p>
           <p className='mt-4'>With 100+ Trusted Doctors</p>
         </div>
-        <Link href="/login" className='bg-white inline-block text-sm sm:text-base text-gray-600  px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Create account</Link>
+        {
+          isAuthenticated ? 
+          <Link href="/my-profile" className='bg-white inline-block text-sm sm:text-base text-gray-600  px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>My Profile</Link>
+          : <Link href="/login" className='bg-white inline-block text-sm sm:text-base text-gray-600  px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Create account</Link>
+        }
       </div>
 
       {/* right side */}
